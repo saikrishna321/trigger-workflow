@@ -5,6 +5,10 @@ name: CI
 # Controls when the workflow will run
 on:
   workflow_dispatch:
+   inputs:
+    target_version:
+      description: 'Input a version (e.g., 1.0.0)'
+      required: true
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -25,7 +29,7 @@ jobs:
           repo_name="auto-update-readme"  
           event_type="trigger-workflow" 
           service="Server to Driver"
-          version="0.0.9"
+          version="${{ github.event.inputs.target_version }}"
   
           curl -L \
             -X POST \
