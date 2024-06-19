@@ -28,7 +28,7 @@ jobs:
           # Set the required variables
           repo_owner="saikrishna321" 
           repo_name="auto-update-readme"  
-          event_type="trigger-workflow" 
+          event_type="server-update" 
           service="Server to Driver"
           version=$TAG_NAME
   
