@@ -24,12 +24,13 @@ jobs:
 
       - name: Trigger Workflow in Another Repository
         run: |
+          TAG_NAME=$(curl -s "https://api.github.com/repos/saikrishna321/trigger-workflow/tags" | grep -m 1 '"name"' | sed -E 's/.*"name": "([^"]+)".*/\1/') 
           # Set the required variables
           repo_owner="saikrishna321" 
           repo_name="auto-update-readme"  
           event_type="trigger-workflow" 
           service="Server to Driver"
-          version="${{ github.event.inputs.target_version }}"
+          version=$TAG_NAME
   
           curl -L \
             -X POST \
