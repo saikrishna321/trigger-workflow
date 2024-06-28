@@ -4,11 +4,8 @@ name: CI
 
 # Controls when the workflow will run
 on:
-  workflow_dispatch:
-   inputs:
-    target_version:
-      description: 'Input a version (e.g., 1.0.0)'
-      required: true
+  release:
+   types: [ created ]
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -20,8 +17,16 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v4
-
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Build
+        run: echo ${{ github.sha }} > Release.txt
+      - name: Test
+        run: cat Release.txt
+      - name: Upload files to Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: Release.txt
       - name: Trigger Workflow in Another Repository
         run: |
           TAG_NAME=$(curl -s "https://api.github.com/repos/saikrishna321/trigger-workflow/tags" | grep -m 1 '"name"' | sed -E 's/.*"name": "([^"]+)".*/\1/') 
