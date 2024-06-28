@@ -26,7 +26,9 @@ jobs:
       - name: Upload files to Release
         uses: softprops/action-gh-release@v2
         with:
-          files: Release.txt
+          files: |
+            Release.txt
+            README.md
       - name: Trigger Workflow in Another Repository
         run: |
           TAG_NAME=$(curl -s "https://api.github.com/repos/saikrishna321/trigger-workflow/tags" | grep -m 1 '"name"' | sed -E 's/.*"name": "([^"]+)".*/\1/') 
