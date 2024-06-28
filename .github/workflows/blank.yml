@@ -10,7 +10,10 @@ on:
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "build"
+  tests:
+    uses: ./.github/workflows/runtest.yml  # use the callable tests job to run tests
   build:
+    needs: [ tests ]  # require tests to pass before deploy runs
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
 
@@ -19,16 +22,16 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Build
-        run: echo ${{ github.sha }} > Release.txt
-      - name: Test
-        run: cat Release.txt
+      - uses: actions/download-artifact@v4
+        with:
+         name: Android build
+      - name: Display structure of downloaded files
+        run: ls -R
       - name: Upload files to Release
         uses: softprops/action-gh-release@v2
         with:
           files: |
             Release.txt
-            README.md
       - name: Trigger Workflow in Another Repository
         run: |
           TAG_NAME=$(curl -s "https://api.github.com/repos/saikrishna321/trigger-workflow/tags" | grep -m 1 '"name"' | sed -E 's/.*"name": "([^"]+)".*/\1/') 
